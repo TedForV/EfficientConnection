@@ -7,7 +7,7 @@ import (
 // Creator define the actions for db_creator,model_creator and view_creator
 type Creator interface {
 	Validate(jsoniter.Any) (bool, error)
-	Generate(jsoniter.Any) (string, error)
+	GenerateScript(jsoniter.Any) (string, error)
 }
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
