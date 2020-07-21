@@ -16,3 +16,4 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 func Analyse(jsonStr string) {
 
 }
+

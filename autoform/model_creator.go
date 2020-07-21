@@ -12,7 +12,7 @@ type modelCreator struct {
 }
 
 func (mc *modelCreator) Validate(jsonObj jsoniter.Any) (bool, error) {
-	result, notInKeys := commonfunc.Contains(jsonObj.Keys(), true, "id", "name")
+	result, notInKeys := commonfunc.Contains(jsonObj.Keys(), true, "id", "name", "flow_id", "is_flow_end")
 	if result {
 		return true, nil
 	}
