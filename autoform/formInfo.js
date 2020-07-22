@@ -1,0 +1,31 @@
+{
+    "formName":"测试一",
+    "formCode":"table_code_1",
+    "displayText":"单元测试",
+    "columns":[{
+        "id":1,
+        "name":"name",
+        "displayName":"姓名",
+        "type":{
+            "id":1,
+            "len":500
+        }
+    },{
+        "id":2,
+        "name":"sex",
+        "displayName":"性别",
+        "type":{
+            "id":3,
+            "len":0
+        }
+    }],
+    "pageLayout":{
+        "column":2,
+        "details":[
+            [1,3],
+            [2,4],
+            [5,-1],
+            [6,0]
+        ]
+    }
+}

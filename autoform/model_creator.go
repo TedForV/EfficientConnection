@@ -8,6 +8,13 @@ import (
 	"strings"
 )
 
+var importPart = `import (
+	"github.com/shopspring/decimal"
+)
+
+`
+
+
 type modelCreator struct {
 }
 

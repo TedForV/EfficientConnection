@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	PRIMARY_KEY_SCRIPT = "primary key (id) ";
+	PrimaryKeyScript = "primary key (id) "
 )
 
 type dbCreator struct{}
