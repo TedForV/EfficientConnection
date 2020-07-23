@@ -2,6 +2,7 @@ package autoform
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"strconv"
 )
 
@@ -11,11 +12,39 @@ type FormType interface {
 	GenerateDbColumnScript(name string) string
 }
 
+// FormInfo is json model
 type FormInfo struct {
+	FormName    string       `json:"formName"`
+	FormCode    string       `json:"formCode"`
+	DisplayText string       `json:"displayText"`
+	NeedFlow    bool         `json:"needFlow"`
+	Columns     []FormColumn `json:"columns"`
+	Layout      FormLayout   `json:"layout"`
+}
+
+// FormColumn define the column definition in FormInfo
+type FormColumn struct {
+	ID          int            `jsong:"id"`
+	Name        string         `json:"name"`
+	DisplayText string         `json:"displayText"`
+	ColumnType  FormColumnType `json:"type"`
+}
+
+// FormColumnType define the column type selection in FormInfo
+type FormColumnType struct {
+	ID  int `json:"id"`
+	Len int `json:"len"`
+}
+
+// FormLayout define the layout for form columns
+type FormLayout struct {
+	Column  int     `json:"column"`
+	Details [][]int `json:"details"`
 }
 
 // FormCommonType is common type supported in form
 type FormCommonType struct {
+	ID                     int
 	Name                   string
 	IsNeedLength           bool
 	Length                 int
@@ -65,19 +94,40 @@ type FormRelateTypeSelection struct {
 var supportedFormTypes []FormCommonType
 
 func init() {
-	supportedFormTypes = make([]FormCommonType, 0, 10)
-	supportedFormTypes = append(supportedFormTypes, FormCommonType{})
+	i := 0
+	i = initSupportedCommonType(i)
+
 }
+
+var supportedCommonTypes map[int]FormCommonType
+var supportedCommonTypesArr []FormCommonType
+
+var decimailID int
 
 // GetSupportedCommonType returns all type for form
 func GetSupportedCommonType() ([]FormCommonType, error) {
-	return []FormCommonType{
-		createIntType(),
-		createDecimalType(),
-		createFloatType(),
-		createStringType(),
-		createBoolType(),
-		createAttachmentType()}, nil
+	if supportedCommonTypesArr == nil {
+		supportedCommonTypesArr = make([]FormCommonType, 0, len(supportedCommonTypes))
+		for _, v := range supportedCommonTypes {
+			supportedCommonTypesArr = append(supportedCommonTypesArr, v)
+		}
+	}
+
+	return supportedCommonTypesArr, nil
+}
+
+func isFormTypeExisted(id int) bool {
+	if _, ok := supportedCommonTypes[id]; ok {
+		return true
+	}
+	return false
+}
+
+func generateColumnGoScript(column FormColumn) (string, error) {
+	if v, ok := supportedCommonTypes[column.ColumnType.ID]; ok {
+		return v.GenerateGolangPropertyScript(column.Name), nil
+	}
+	return "", errors.New("数据类型不支持")
 }
 
 // GetSupportedEnumType returns all enum type for form
@@ -90,8 +140,27 @@ func GetSupportedFormType() {
 
 }
 
-func createIntType() FormCommonType {
+func initSupportedCommonType(i int) int {
+	supportedCommonTypes = make(map[int]FormCommonType)
+	i++
+	supportedCommonTypes[i] = createIntType(i)
+	i++
+	supportedCommonTypes[i] = createDecimalType(i)
+	decimailID = i
+	i++
+	supportedCommonTypes[i] = createFloatType(i)
+	i++
+	supportedCommonTypes[i] = createStringType(i)
+	i++
+	supportedCommonTypes[i] = createBoolType(i)
+	i++
+	supportedCommonTypes[i] = createAttachmentType(i)
+	return i
+}
+
+func createIntType(id int) FormCommonType {
 	return FormCommonType{
+		ID:           id,
 		Name:         "int",
 		IsNeedLength: false,
 		Length:       0,
@@ -100,8 +169,9 @@ func createIntType() FormCommonType {
 	}
 }
 
-func createDecimalType() FormCommonType {
+func createDecimalType(id int) FormCommonType {
 	return FormCommonType{
+		ID:           id,
 		Name:         "decimal",
 		IsNeedLength: false,
 		Length:       0,
@@ -110,8 +180,9 @@ func createDecimalType() FormCommonType {
 	}
 }
 
-func createFloatType() FormCommonType {
+func createFloatType(id int) FormCommonType {
 	return FormCommonType{
+		ID:           id,
 		Name:         "float",
 		IsNeedLength: false,
 		Length:       0,
@@ -120,8 +191,9 @@ func createFloatType() FormCommonType {
 	}
 }
 
-func createStringType() FormCommonType {
+func createStringType(id int) FormCommonType {
 	return FormCommonType{
+		ID:           id,
 		Name:         "string",
 		IsNeedLength: true,
 		Length:       0,
@@ -130,8 +202,9 @@ func createStringType() FormCommonType {
 	}
 }
 
-func createBoolType() FormCommonType {
+func createBoolType(id int) FormCommonType {
 	return FormCommonType{
+		ID:           id,
 		Name:         "bool",
 		IsNeedLength: false,
 		Length:       0,
@@ -140,6 +213,6 @@ func createBoolType() FormCommonType {
 	}
 }
 
-func createAttachmentType() FormCommonType {
-	return createIntType()
+func createAttachmentType(id int) FormCommonType {
+	return createIntType(id)
 }

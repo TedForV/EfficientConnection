@@ -1,19 +1,16 @@
 package autoform
 
-import (
-	jsoniter "github.com/json-iterator/go"
-)
-
 const (
+	// PrimaryKeyScript is primary key script
 	PrimaryKeyScript = "primary key (id) "
 )
 
 type dbCreator struct{}
 
-func (dc *dbCreator) Validate(jsonObj jsoniter.Any) (bool, error) {
+func (dc *dbCreator) Validate(form FormInfo) (bool, error) {
 	return true, nil
 }
 
-func (dc *dbCreator) GenerateScript(jsoniter.Any) (string, error) {
+func (dc *dbCreator) GenerateScript(form FormInfo) (string, error) {
 	return "", nil
 }

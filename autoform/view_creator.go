@@ -1,15 +1,11 @@
 package autoform
 
-import (
-	jsoniter "github.com/json-iterator/go"
-)
-
 type viewCreator struct{}
 
-func (vc *viewCreator) Validate(jsonObj jsoniter.Any) (bool, error) {
+func (vc *viewCreator) Validate(form FormInfo) (bool, error) {
 	return true, nil
 }
 
-func (vc *viewCreator) GenerateScript(jsoniter.Any) (string, error) {
+func (vc *viewCreator) GenerateScript(form FormInfo) (string, error) {
 	return "", nil
 }
