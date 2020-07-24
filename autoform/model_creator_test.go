@@ -104,6 +104,10 @@ func Test_modelCreator_GenerateScript(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.mc.GenerateScript(tt.args.form, tt.args.hasDecimalType)
+			if err != nil {
+				t.Error(err)
+				return
+			}
 			filePath := rootPath + tt.args.form.FormCode + ".go"
 			os.Remove(filePath)
 			f, err := os.Create(filePath)
