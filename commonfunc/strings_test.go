@@ -233,3 +233,52 @@ func TestConvertToStructPropertyName(t *testing.T) {
 		})
 	}
 }
+
+func TestConvertToJSONPropertyName(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "FirstCapital",
+			args: args{
+				name: "user_info",
+			},
+			want:    "userInfo",
+			wantErr: false,
+		},
+		{
+			name: "Capital",
+			args: args{
+				name: "user_Info",
+			},
+			want:    "userInfo",
+			wantErr: false,
+		},
+		{
+			name: "None",
+			args: args{
+				name: "UserInfo",
+			},
+			want:    "userInfo",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ConvertToJSONPropertyName(tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ConvertToJSONPropertyName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ConvertToJSONPropertyName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

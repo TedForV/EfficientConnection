@@ -21,6 +21,37 @@ func Contains(source []string, caseInsensitive bool, keys ...string) (bool, []st
 
 var underscore rune = rune('_')
 
+// ConvertToJSONPropertyName convert name fit the json rules
+func ConvertToJSONPropertyName(name string) (string, error) {
+	if len(name) == 0 {
+		return "", errors.New("字符串为空")
+	}
+	words := []rune(name)
+	result := make([]rune, 0, len(words)*2)
+	nextCapital := false
+	for _, v := range words {
+		if v == underscore {
+			nextCapital = true
+			continue
+		}
+
+		if !unicode.IsLetter(v) {
+			return "", errors.New(fmt.Sprintf("包含非英文字符：%s", string(v)))
+		}
+
+		if nextCapital {
+			result = append(result, unicode.ToUpper(v))
+			nextCapital = false
+		} else {
+			result = append(result, v)
+		}
+	}
+	if !unicode.IsLower(result[0]) {
+		result[0] = unicode.ToLower(result[0])
+	}
+	return string(result), nil
+}
+
 // ConvertToStructPropertyName convert name fit the struct rules
 func ConvertToStructPropertyName(name string) (string, error) {
 	if len(name) == 0 {
