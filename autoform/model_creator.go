@@ -13,7 +13,7 @@ const (
 	
 	`
 	importPart = `import (
-		github.com/shopspring/decimal
+		"github.com/shopspring/decimal"
 	)
 	
 	`

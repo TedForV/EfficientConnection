@@ -54,7 +54,7 @@ type FormCommonType struct {
 
 // GenerateGolangPropertyScript generate golang script
 func (fct *FormCommonType) GenerateGolangPropertyScript(name string) string {
-	return fmt.Sprintf(fct.GolangPropertyTemplate, name)
+	return fmt.Sprintf(fct.GolangPropertyTemplate, name, name)
 }
 
 // GenerateDbColumnScript generate db column script
@@ -164,7 +164,7 @@ func createIntType(id int) FormCommonType {
 		Name:         "int",
 		IsNeedLength: false,
 		Length:       0,
-		GolangPropertyTemplate: "%s		int32	`gorm:\"column:%s\"`",
+		GolangPropertyTemplate: "%s		int32	`gorm:\"column:%s\"` \n\t",
 		DbColumnTemplate: "%s		bigint not null,",
 	}
 }
@@ -175,7 +175,7 @@ func createDecimalType(id int) FormCommonType {
 		Name:         "decimal",
 		IsNeedLength: false,
 		Length:       0,
-		GolangPropertyTemplate: "%s 	decimal.Decimal	`gorm:\"column:%s\"`",
+		GolangPropertyTemplate: "%s 	decimal.Decimal	`gorm:\"column:%s\"`\n\t",
 		DbColumnTemplate: "%s		decimal not null,",
 	}
 }
@@ -186,7 +186,7 @@ func createFloatType(id int) FormCommonType {
 		Name:         "float",
 		IsNeedLength: false,
 		Length:       0,
-		GolangPropertyTemplate: "%s		float	`gorm:\"column:%s\"`",
+		GolangPropertyTemplate: "%s		float32	`gorm:\"column:%s\"`\n\t",
 		DbColumnTemplate: "%s 	float not null,",
 	}
 }
@@ -197,7 +197,7 @@ func createStringType(id int) FormCommonType {
 		Name:         "string",
 		IsNeedLength: true,
 		Length:       0,
-		GolangPropertyTemplate: "%s		string `gorm:\"column:%s\"`",
+		GolangPropertyTemplate: "%s		string `gorm:\"column:%s\"`\n\t",
 		DbColumnTemplate: "%s		varchar(%s) not null,",
 	}
 }
@@ -208,7 +208,7 @@ func createBoolType(id int) FormCommonType {
 		Name:         "bool",
 		IsNeedLength: false,
 		Length:       0,
-		GolangPropertyTemplate: "%s		bool `gorm:\"column:%s\"`",
+		GolangPropertyTemplate: "%s		bool `gorm:\"column:%s\"`\n\t",
 		DbColumnTemplate: "%s		tinyint not null,",
 	}
 }
