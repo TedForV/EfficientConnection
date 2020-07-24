@@ -2,6 +2,7 @@ package autoform
 
 import (
 	"fmt"
+	"github.com/TedForV/EfficientConnection/commonfunc"
 	"github.com/pkg/errors"
 	"strconv"
 )
@@ -53,8 +54,19 @@ type FormCommonType struct {
 }
 
 // GenerateGolangPropertyScript generate golang script
-func (fct *FormCommonType) GenerateGolangPropertyScript(name string) string {
-	return fmt.Sprintf(fct.GolangPropertyTemplate, name, name)
+func (fct *FormCommonType) GenerateGolangPropertyScript(name string) (string, error) {
+	structName, err := commonfunc.ConvertToStructPropertyName(name)
+	if err != nil {
+		return "", err
+	}
+	tableColumnName, err := commonfunc.ConvertToMysqlColumnName(name)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf(
+		fct.GolangPropertyTemplate,
+		structName,
+		tableColumnName), nil
 }
 
 // GenerateDbColumnScript generate db column script
@@ -125,7 +137,7 @@ func isFormTypeExisted(id int) bool {
 
 func generateColumnGoScript(column FormColumn) (string, error) {
 	if v, ok := supportedCommonTypes[column.ColumnType.ID]; ok {
-		return v.GenerateGolangPropertyScript(column.Name), nil
+		return v.GenerateGolangPropertyScript(column.Name)
 	}
 	return "", errors.New("数据类型不支持")
 }

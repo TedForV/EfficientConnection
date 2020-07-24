@@ -74,6 +74,10 @@ func (mc *modelCreator) GenerateScript(form FormInfo, hasDecimalType bool) (stri
 		columnBuf.WriteString(script)
 		columnBuf.WriteString("  ")
 	}
-	fullBuf.WriteString(fmt.Sprintf(structScriptTemplate, form.FormCode, columnBuf.String()))
+	structName, err := commonfunc.ConvertToStructPropertyName(form.FormCode)
+	if err != nil {
+		return "", err
+	}
+	fullBuf.WriteString(fmt.Sprintf(structScriptTemplate, structName, columnBuf.String()))
 	return fullBuf.String(), nil
 }
