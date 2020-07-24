@@ -127,3 +127,109 @@ func Test_containsKeys(t *testing.T) {
 		})
 	}
 }
+
+func TestConvertToMysqlColumnName(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "CapitalTest",
+			args: args{
+				name: "UserInfo",
+			},
+			want:    "user_info",
+			wantErr: false,
+		},
+		{
+			name: "CapitalTest2",
+			args: args{
+				name: "userInfo",
+			},
+			want:    "user_info",
+			wantErr: false,
+		},
+		{
+			name: "UnderscoreTest",
+			args: args{
+				name: "user_info",
+			},
+			want:    "user_info",
+			wantErr: false,
+		},
+		{
+			name: "CapitalAndUnderscoreTest",
+			args: args{
+				name: "User_Info",
+			},
+			want:    "user_info",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ConvertToMysqlColumnName(tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ConvertToMysqlColumnName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ConvertToMysqlColumnName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestConvertToStructPropertyName(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "FirstCapital",
+			args: args{
+				name: "user_info",
+			},
+			want:    "UserInfo",
+			wantErr: false,
+		},
+		{
+			name: "Capital",
+			args: args{
+				name: "user_Info",
+			},
+			want:    "UserInfo",
+			wantErr: false,
+		},
+		{
+			name: "None",
+			args: args{
+				name: "UserInfo",
+			},
+			want:    "UserInfo",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ConvertToStructPropertyName(tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ConvertToStructPropertyName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ConvertToStructPropertyName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

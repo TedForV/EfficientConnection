@@ -1,7 +1,10 @@
 package commonfunc
 
 import (
+	"fmt"
+	"github.com/pkg/errors"
 	"strings"
+	"unicode"
 )
 
 // Contains for string contain keys
@@ -14,6 +17,69 @@ func Contains(source []string, caseInsensitive bool, keys ...string) (bool, []st
 	} else {
 		return containsKeys(source, caseInsensitive, keys)
 	}
+}
+
+var underscore rune = rune('_')
+
+// ConvertToStructPropertyName convert name fit the struct rules
+func ConvertToStructPropertyName(name string) (string, error) {
+	if len(name) == 0 {
+		return "", errors.New("字符串为空")
+	}
+	words := []rune(name)
+	result := make([]rune, 0, len(words)*2)
+	nextCapital := false
+	for _, v := range words {
+		if v == underscore {
+			nextCapital = true
+			continue
+		}
+
+		if !unicode.IsLetter(v) {
+			return "", errors.New(fmt.Sprintf("包含非英文字符：%s", string(v)))
+		}
+
+		if nextCapital {
+			result = append(result, unicode.ToUpper(v))
+			nextCapital = false
+		} else {
+			result = append(result, v)
+		}
+	}
+	if !unicode.IsUpper(result[0]) {
+		result[0] = unicode.ToUpper(result[0])
+	}
+	return string(result), nil
+}
+
+// ConvertToMysqlColumnName convert name fit the mysql table column rule
+func ConvertToMysqlColumnName(name string) (string, error) {
+	if len(name) == 0 {
+		return "", errors.New("字符串为空")
+	}
+	words := []rune(name)
+	result := make([]rune, 0, len(words)*2)
+	for _, v := range words {
+		if v == underscore {
+			result = append(result, v)
+			continue
+		}
+		if !unicode.IsLetter(v) {
+			return "", errors.New(fmt.Sprintf("包含非英文字符：%s", string(v)))
+		}
+		if unicode.IsUpper(v) {
+			if len(result) != 0 && result[len(result)-1] != underscore {
+				result = append(result, underscore)
+			}
+			result = append(result, unicode.ToLower(v))
+		} else {
+			result = append(result, v)
+		}
+	}
+	if result[0] == underscore {
+		result = result[1:]
+	}
+	return string(result), nil
 }
 
 // ContainsKeys judge keys for contain method
