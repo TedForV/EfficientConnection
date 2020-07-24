@@ -10,7 +10,7 @@ var rootPath = "F:\\modProjects\\EfficientConnection\\formmodel\\"
 var formInfoStr1 = `
 {
     "formName":"测试一",
-    "formCode":"code_1",
+    "formCode":"user_info",
     "displayText":"单元测试",
     "needFlow":false,
     "columns":[{
