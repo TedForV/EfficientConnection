@@ -3,6 +3,7 @@ go:
   - "1.14.x"
 script:
   - go test ./commonfunc
+  - go test ./autoform
 notifications:
   email:
     recipients:
